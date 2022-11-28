@@ -6,7 +6,7 @@
     <meta content='width=device-width; height=device-height; initial-scale=1.0; maximum-scale=1.0; user-scalable=0;' name='viewport' />
     <meta name="viewport" content="width=device-width" />
     <meta name="license" content="
-        Copyright 2013 Google, Abram Hindle
+        Copyright 2013 Google, Abram Hindle, 2022 Eric Weber
         
         Licensed under the Apache License, Version 2.0 (the "License");
         you may not use this file except in compliance with the License.
@@ -239,7 +239,7 @@ mouse.mousedowners.push(function(x,y,clicked,e) {
         if (circ_radius > 19) {
             circ_radius_up = false;
         }
-        if (circ_radius == 0) {
+        if (circ_radius == 1) {
             circ_radius_up = true;
         }
     addEntityWithoutName({'x':x,'y':y,'colour':'white', 'radius':circ_radius});
@@ -250,7 +250,7 @@ mouse.mouseuppers.push(function(x,y,clicked,e) {
         if (circ_radius > 19) {
             circ_radius_up = false;
         }
-        if (circ_radius == 0) {
+        if (circ_radius == 1) {
             circ_radius_up = true;
         }
     addEntityWithoutName({'x':x,'y':y,'colour':'white', 'radius':circ_radius});
@@ -261,7 +261,7 @@ mouse.mousedraggers.push(function(x,y,clicked,e) {
         if (circ_radius > 19) {
             circ_radius_up = false;
         }
-        if (circ_radius == 0) {
+        if (circ_radius == 1) {
             circ_radius_up = true;
         }
     addEntityWithoutName({'x':x,'y':y,'colour':'white', 'radius':circ_radius});
