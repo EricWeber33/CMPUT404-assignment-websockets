@@ -43,15 +43,15 @@ function debug(str) {
 debug("Test");
 
 world = {};
-
+circ_radius = 1;
+circ_radius_up = true;
 //XXX: TODO Make this prettier!
 function drawCircle(context,entity) {
     with(context) {
-        beginPath();                
+        beginPath();
         lineWidth = 3;
         var x = entity["x"];
         var y = entity["y"];
-        //moveTo(x,y);
         fillStyle = entity["colour"];
         strokeStyle = fillStyle;
         arc(x, y, (entity["radius"])?entity["radius"]:50, 0, 2.0 * Math.PI, false);  
@@ -123,8 +123,12 @@ function getPosition(e) {
 
 function addEntity(entity, data) {
     world[entity] = data;
+    let send_data = {}
+    send_data[entity] = data
+    socket.send(JSON.stringify(send_data));
     drawNextFrame(); // (but should we?)
     //XXX: Send a XHTML Request that updates the entity you just modified!
+    
 }
 var counter = 0;
 function addEntityWithoutName(data) {
@@ -231,16 +235,36 @@ mouse = (function() {
 // Add the application specific mouse listeners!
 //XXX: TODO Make these prettier!
 mouse.mousedowners.push(function(x,y,clicked,e) {
-    addEntityWithoutName({'x':x,'y':y,'colour':'blue'});
+    circ_radius_up ? circ_radius++ : circ_radius--;
+        if (circ_radius > 19) {
+            circ_radius_up = false;
+        }
+        if (circ_radius == 0) {
+            circ_radius_up = true;
+        }
+    addEntityWithoutName({'x':x,'y':y,'colour':'white', 'radius':circ_radius});
 });
 
 mouse.mouseuppers.push(function(x,y,clicked,e) {
-    addEntityWithoutName({'x':x,'y':y,'colour':'red'});
+    circ_radius_up ? circ_radius++ : circ_radius--;
+        if (circ_radius > 19) {
+            circ_radius_up = false;
+        }
+        if (circ_radius == 0) {
+            circ_radius_up = true;
+        }
+    addEntityWithoutName({'x':x,'y':y,'colour':'white', 'radius':circ_radius});
 });
 
 mouse.mousedraggers.push(function(x,y,clicked,e) {
-    addEntityWithoutName({'x':x,'y':y,'colour':'green',
-                          'radius':10});
+    circ_radius_up ? circ_radius++ : circ_radius--;
+        if (circ_radius > 19) {
+            circ_radius_up = false;
+        }
+        if (circ_radius == 0) {
+            circ_radius_up = true;
+        }
+    addEntityWithoutName({'x':x,'y':y,'colour':'white', 'radius':circ_radius});
 });
 
 
@@ -254,14 +278,24 @@ function wsSetup() {
     socket = new WebSocket(url);
     socket.onopen = function() {
         //XXX: TODO What are you going to do here?
+        debug("socket open" + url);
+        wscounter += 1;
     };
     socket.onerror = function(msg) {
         debug("WebSocket Error:" + msg.data);
     };
     socket.onmessage = function(msg) {  
         try {
+            console.log("socket onmessage")
             debug("WebSocket Recv:" + msg.data);
-            //XXX: TODO What are you going to do here?            
+            //XXX: TODO What are you going to do here
+            console.log(msg.data)
+            const data = JSON.parse(msg.data);
+            for (let key in data) {
+                world[key] = data[key];
+            }
+            drawNextFrame();
+            drawFrame();
         } catch (e) {
             alert("socket on message: " + e);
         }
